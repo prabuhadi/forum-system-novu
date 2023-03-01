@@ -1,13 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
 
 const Home = () => {
   const [thread, setThread] = useState("");
+  const navigate = useNavigate();
+
+  // 👇 useEffect Hook
+  useEffect(() => {
+    const checkUser = () => {
+      if (!localStorage.getItem("_id")) {
+        navigate("/");
+      } else {
+        console.log("Authenticated");
+      }
+    };
+    checkUser();
+  }, [navigate]);
+
+  const createThread = () => {
+    fetch("http://localhost:4000/api/create/thread", {
+      method: "POST",
+      body: JSON.stringify({ thread, userId: localStorage.getItem("_id") }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ thread });
-    setThread();
+    createThread();
+    setThread("");
   };
 
   return (

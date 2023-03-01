@@ -13,6 +13,8 @@ app.use(cors());
 
 // 👇holds all the existing users
 const users = [];
+// 👇holds all the post created
+const threadList = [];
 // 👇generates a random string as ID
 const generateID = () => Math.random().toString(36).substring(2, 10);
 
@@ -30,6 +32,34 @@ app.post("/api/register", async (req, res) => {
   } else {
     res.json({ error_message: "User already exists" }); // if else statement check user avail
   }
+});
+
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+  let result = users.filter(
+    (user) => user.email === email && user.password === password
+  );
+
+  if (result.length !== 1) {
+    return res.json({ error_message: "Incorrect credentials" });
+  } else {
+    res.json({ message: "Login successfully", id: result[0].id });
+  }
+});
+
+app.post("/api/create/thread", async (req, res) => {
+  const { thread, userId } = req.body;
+  const threadId = generateID();
+
+  threadList.unshift({
+    id: threadId,
+    title: thread,
+    userId,
+    replies: [],
+    likes: [],
+  });
+
+  res.json({ message: "Thread created successfully!", thread: threadList });
 });
 
 app.get("/api", (req, res) => {
