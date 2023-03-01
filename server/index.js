@@ -62,6 +62,10 @@ app.post("/api/create/thread", async (req, res) => {
   res.json({ message: "Thread created successfully!", thread: threadList });
 });
 
+app.get("/api/all/threads", (res, req) => {
+  res.json({ threads: threadList });
+});
+
 app.get("/api", (req, res) => {
   res.json({
     message: "Selamat Pagi",

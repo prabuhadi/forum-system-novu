@@ -4,6 +4,7 @@ import Nav from "./Nav";
 
 const Home = () => {
   const [thread, setThread] = useState("");
+  const [threadList, setThreadList] = useState("");
   const navigate = useNavigate();
 
   // 👇 useEffect Hook
@@ -12,7 +13,10 @@ const Home = () => {
       if (!localStorage.getItem("_id")) {
         navigate("/");
       } else {
-        console.log("Authenticated");
+        fetch("http://localhost:4000/api/all/threads")
+          .then((res) => res.json())
+          .then((data) => setThreadList(data.threads))
+          .catch((err) => console.error(err));
       }
     };
     checkUser();
@@ -26,7 +30,8 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        alert(data.message);
+        setThreadList(data.threads);
       })
       .catch((err) => console.log(err));
   };
@@ -56,6 +61,25 @@ const Home = () => {
           </div>
           <button className="homeBtn">CREATE THREAD</button>
         </form>
+
+        <div className="thread__container">
+          {threadList.localeCompare((thread) => (
+            <div className="thread__item" key={thread.id}>
+              <p>{thread.title}</p>
+              <div className="react__container">
+                <Likes
+                  numberOfLikers={thread.likes.length}
+                  threadId={thread.id}
+                />
+                <Comments
+                  numberOfComments={thread.replies.length}
+                  threadId={thread.id}
+                  title={thread.title}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </>
   );
