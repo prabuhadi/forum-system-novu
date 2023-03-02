@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
+import Likes from "../utils/Likes";
+import Comments from "../utils/Comments";
 
 const Home = () => {
   const [thread, setThread] = useState("");

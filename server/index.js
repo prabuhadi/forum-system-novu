@@ -19,19 +19,25 @@ const threadList = [];
 const generateID = () => Math.random().toString(36).substring(2, 10);
 
 app.post("/api/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password, username } = req.body;
   const id = generateID();
   const result = users.filter(
     (user) => user.email === email && user.password === password
   );
 
   if (result.length === 0) {
-    const newUser = { id, username, email, password };
+    const newUser = { id, email, password, username };
+    //👇🏻 add the user as a subscriber
+    await novu.subscribers.identify(id, { email: email });
+
     users.push(newUser);
-    return res.json({ message: "Account created successsfully!" });
-  } else {
-    res.json({ error_message: "User already exists" }); // if else statement check user avail
+    return res.json({
+      message: "Account created successfully!",
+    });
   }
+  res.json({
+    error_message: "User already exists",
+  });
 });
 
 app.post("/api/login", (req, res) => {
@@ -49,8 +55,7 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/create/thread", async (req, res) => {
   const { thread, userId } = req.body;
-  const threadId = generateID();
-
+  let threadId = generateID();
   threadList.unshift({
     id: threadId,
     title: thread,
@@ -58,8 +63,22 @@ app.post("/api/create/thread", async (req, res) => {
     replies: [],
     likes: [],
   });
+  //👇🏻 creates a new topic from the post
+  await novu.topics.create({
+    key: threadId,
+    name: thread,
+  });
+  //👇🏻 add the user as a subscriber
+  await novu.topics.addSubscribers(threadId, {
+    subscribers: [userId],
+    //replace with your subscriber ID to test run
+    // subscribers: ["<YOUR_SUBSCRIBER_ID>"],
+  });
 
-  res.json({ message: "Thread created successfully!", thread: threadList });
+  res.json({
+    message: "Thread created successfully!",
+    threads: threadList,
+  });
 });
 
 app.get("/api/all/threads", (res, req) => {
@@ -92,11 +111,11 @@ app.post("/api/thread/replies", (req, res) => {
 app.post("/api/create/reply", async (req, res) => {
   const { id, userId, reply } = req.body;
   const result = threadList.filter((thread) => thread.id === id);
-  const user = user.filter((user) => user.id === userId);
-  result[0].replies.unshift({
-    userId: user[0].id,
-    name: user[0].username,
-    text: reply,
+  const user = users.filter((user) => user.id === userId);
+  result[0].replies.unshift({ name: user[0].username, text: reply });
+  //👇🏻 Triggers the function when there is a new reply
+  await novu.trigger("topicnotification", {
+    to: [{ type: "Topic", topicKey: id }],
   });
 
   res.json({

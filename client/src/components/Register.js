@@ -27,11 +27,10 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(username, email, password);
     signUp();
-    setEmail();
-    setUsername();
-    setPassword();
+    setEmail("");
+    setUsername("");
+    setPassword("");
   };
 
   return (

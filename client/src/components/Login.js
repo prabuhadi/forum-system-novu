@@ -27,7 +27,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ email, password });
+    loginUser();
     setEmail("");
     setPassword("");
   };
@@ -48,7 +48,7 @@ const Login = () => {
         />
         <label htmlFor="password">Password</label>
         <input
-          type="text"
+          type="password"
           name="password"
           id="password"
           required
