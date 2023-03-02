@@ -89,6 +89,21 @@ app.post("/api/thread/replies", (req, res) => {
   });
 });
 
+app.post("/api/create/reply", async (req, res) => {
+  const { id, userId, reply } = req.body;
+  const result = threadList.filter((thread) => thread.id === id);
+  const user = user.filter((user) => user.id === userId);
+  result[0].replies.unshift({
+    userId: user[0].id,
+    name: user[0].username,
+    text: reply,
+  });
+
+  res.json({
+    message: "Response added successfully!",
+  });
+});
+
 app.get("/api", (req, res) => {
   res.json({
     message: "Selamat Pagi",

@@ -8,6 +8,26 @@ const Replies = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const addReply = () => {
+    fetch("http://localhost:4000/api/create/reply", {
+      method: "POST",
+      body: JSON.stringify({
+        id,
+        userId: localStorage.getItem("__id"),
+        reply,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message);
+        navigate("/dashboard");
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
     const fetchReplies = () => {
       fetch("http://localhost:4000/api/thread/replies", {
@@ -31,7 +51,7 @@ const Replies = () => {
 
   const handleSubmitReply = (e) => {
     e.preventDefault();
-    console.log({ reply });
+    addReply();
     setReply("");
   };
 
