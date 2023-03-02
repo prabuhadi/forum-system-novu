@@ -66,6 +66,29 @@ app.get("/api/all/threads", (res, req) => {
   res.json({ threads: threadList });
 });
 
+app.post("/api/thread/like", (req, res) => {
+  const { threadId, userId } = req.body;
+  const result = threadList.filter((thread) => thread.id === threadId);
+  const threadLikes = result[0].likes;
+  const authenticateReaction = threadLikes.filter((user) => user === userId);
+
+  if (authenticateReaction.length === 0) {
+    threadLikes.push(userId);
+    return res.json({ message: "You've reacted to the post!" });
+  } else {
+    res.json({ error_message: "You can only react once!" });
+  }
+});
+
+app.post("/api/thread/replies", (req, res) => {
+  const { id } = req.body;
+  const result = thread.List.filter((thread) => thread.id === id);
+  res.json({
+    replies: result[0].replies,
+    title: result[0].title,
+  });
+});
+
 app.get("/api", (req, res) => {
   res.json({
     message: "Selamat Pagi",

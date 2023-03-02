@@ -1,6 +1,27 @@
 import React from "react";
 
 const Likes = ({ numberOfLikes, threadId }) => {
+  const handleLikeFunction = () => {
+    fetch("http://localhost:4000/api/thread/like", {
+      method: "POST",
+      body: JSON.stringify({
+        threadId,
+        userId: localStorage.getItem("_id"),
+      }),
+      headers: {
+        "Content-Type": "application.json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error_message) {
+          alert(data.error_message);
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <div className="likes__container">
       <svg
@@ -10,6 +31,7 @@ const Likes = ({ numberOfLikes, threadId }) => {
         stroke-width="1.5"
         stroke="currentColor"
         class="w-6 h-6"
+        onClick={handleLikeFunction}
       >
         <path
           stroke-linecap="round"
