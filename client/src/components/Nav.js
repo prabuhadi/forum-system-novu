@@ -34,7 +34,6 @@ const Nav = () => {
             )}
           </PopoverNotificationCenter>
         </NovuProvider>
-
         <button onClick={signOut}>Sign out</button>
       </div>
     </nav>

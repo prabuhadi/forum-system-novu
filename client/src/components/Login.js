@@ -9,8 +9,13 @@ const Login = () => {
   const loginUser = () => {
     fetch("http://localhost:4000/api/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -22,7 +27,7 @@ const Login = () => {
           localStorage.setItem("_id", data.id);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const handleSubmit = (e) => {
@@ -44,7 +49,6 @@ const Login = () => {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="JohnDoe@mail.com"
         />
         <label htmlFor="password">Password</label>
         <input
@@ -54,11 +58,10 @@ const Login = () => {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="************"
         />
         <button className="loginBtn">SIGN IN</button>
         <p>
-          Don't have an account? <Link to="/register"> Create New</Link>
+          Don't have an account? <Link to="/register">Create one</Link>
         </p>
       </form>
     </main>

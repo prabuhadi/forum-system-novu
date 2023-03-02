@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Nav from "./Nav";
+import React, { useEffect, useState } from "react";
 import Likes from "../utils/Likes";
 import Comments from "../utils/Comments";
+import { useNavigate } from "react-router-dom";
+import Nav from "./Nav";
 
 const Home = () => {
   const [thread, setThread] = useState("");
-  const [threadList, setThreadList] = useState("");
+  const [threadList, setThreadList] = useState([]);
   const navigate = useNavigate();
 
-  // 👇 useEffect Hook
   useEffect(() => {
     const checkUser = () => {
       if (!localStorage.getItem("_id")) {
@@ -27,29 +26,32 @@ const Home = () => {
   const createThread = () => {
     fetch("http://localhost:4000/api/create/thread", {
       method: "POST",
-      body: JSON.stringify({ thread, userId: localStorage.getItem("_id") }),
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        thread,
+        id: localStorage.getItem("_id"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
         setThreadList(data.threads);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     createThread();
     setThread("");
   };
-
   return (
     <>
       <Nav />
       <main className="home">
         <h2 className="homeTitle">Create a Thread</h2>
-        <form className="homeForm" onSumbit={handleSubmit}>
+        <form className="homeForm" onSubmit={handleSubmit}>
           <div className="home__container">
             <label htmlFor="thread">Title / Description</label>
             <input
@@ -58,19 +60,18 @@ const Home = () => {
               required
               value={thread}
               onChange={(e) => setThread(e.target.value)}
-              placeholder="Your thread will shown to all other user"
             />
           </div>
           <button className="homeBtn">CREATE THREAD</button>
         </form>
 
         <div className="thread__container">
-          {threadList.localeCompare((thread) => (
+          {threadList.map((thread) => (
             <div className="thread__item" key={thread.id}>
               <p>{thread.title}</p>
               <div className="react__container">
                 <Likes
-                  numberOfLikers={thread.likes.length}
+                  numberOfLikes={thread.likes.length}
                   threadId={thread.id}
                 />
                 <Comments

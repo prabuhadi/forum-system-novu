@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const Replies = () => {
-  const [reply, setReply] = useState([]);
-  const [replyList, setReplayList] = useState("");
+  const [replyList, setReplyList] = useState([]);
+  const [reply, setReply] = useState("");
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
@@ -13,7 +13,7 @@ const Replies = () => {
       method: "POST",
       body: JSON.stringify({
         id,
-        userId: localStorage.getItem("__id"),
+        userId: localStorage.getItem("_id"),
         reply,
       }),
       headers: {
@@ -25,7 +25,12 @@ const Replies = () => {
         alert(data.message);
         navigate("/dashboard");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
+  };
+  const handleSubmitReply = (e) => {
+    e.preventDefault();
+    addReply();
+    setReply("");
   };
 
   useEffect(() => {
@@ -41,19 +46,13 @@ const Replies = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setReplayList(data.replies);
+          setReplyList(data.replies);
           setTitle(data.title);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     };
     fetchReplies();
   }, [id]);
-
-  const handleSubmitReply = (e) => {
-    e.preventDefault();
-    addReply();
-    setReply("");
-  };
 
   return (
     <main className="replies">

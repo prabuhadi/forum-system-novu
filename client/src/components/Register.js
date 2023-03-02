@@ -5,13 +5,20 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
   const signUp = () => {
     fetch("http://localhost:4000/api/register", {
       method: "POST",
-      body: JSON.stringify({ username, email, password }),
-      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+        username,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -32,42 +39,38 @@ const Register = () => {
     setUsername("");
     setPassword("");
   };
-
   return (
     <main className="register">
       <h1 className="registerTitle">Create an account</h1>
       <form className="registerForm" onSubmit={handleSubmit}>
-        <label className="username">Username</label>
+        <label htmlFor="username">Username</label>
         <input
-          required
+          type="text"
           name="username"
           id="username"
+          required
           value={username}
-          type="text"
-          placeholder=""
           onChange={(e) => setUsername(e.target.value)}
         />
-        <label className="email">Email Address</label>
+        <label htmlFor="email">Email Address</label>
         <input
-          required
+          type="text"
           name="email"
           id="email"
+          required
           value={email}
-          type="email"
-          placeholder=""
           onChange={(e) => setEmail(e.target.value)}
         />
-        <label className="password">Password</label>
+        <label htmlFor="password">Password</label>
         <input
-          required
+          type="password"
           name="password"
           id="password"
+          required
           value={password}
-          type="password"
-          placeholder=""
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className="registerBtn">Register</button>
+        <button className="registerBtn">REGISTER</button>
         <p>
           Have an account? <Link to="/">Sign in</Link>
         </p>
